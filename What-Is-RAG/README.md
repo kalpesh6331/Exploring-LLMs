@@ -120,5 +120,3 @@ Or authenticate for faster downloads: create a free token at [huggingface.co/set
 ## What's next
 
 **Episode 6 — "Build RAG from scratch"** turns these pieces into the real thing: a self-hosted **Qdrant** vector database, your whole knowledge-base indexed, and **Claude** writing a grounded answer **with citations** — plus a guardrail for "I don't know."
-
-▶️ Watch the series: **Exploring LLMs** — *(add your video/playlist link here)*
