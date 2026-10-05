@@ -27,7 +27,9 @@ QDRANT_URL = "http://localhost:6333"
 
 print(f"Loading embedding model: {MODEL_NAME} ...")
 model = SentenceTransformer(MODEL_NAME)
-VECTOR_SIZE = model.get_embedding_dimension()
+# How many numbers one embedding has (384 for MiniLM). Asking the model for
+# this is version-sensitive -- the method got renamed -- so just measure one.
+VECTOR_SIZE = len(model.encode("dimension probe"))
 
 # --- Chunk on markdown headings (identical to Ep 6) -----------------------
 def chunk_markdown(text, source):

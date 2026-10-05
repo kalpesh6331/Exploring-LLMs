@@ -34,7 +34,7 @@ The `results-run*.json` files are **not** in the repo — they're my numbers, no
 ---
 
 ## Prerequisites
-- **Python 3.9+**
+- **Python 3.11+** (3.9 pulls in old `sentence-transformers` + `qdrant-client` releases that lack APIs this code uses)
 - **Docker** (for Qdrant)
 - An **Anthropic API key** as `CLAUDE_KEY` — from [console.anthropic.com](https://console.anthropic.com)
 - **Docker Compose**, only if you want the Grafana dashboard (step 3b)
