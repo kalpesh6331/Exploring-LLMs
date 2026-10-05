@@ -1,0 +1,603 @@
+[
+  {
+    "path": "README.md",
+    "title": "ShopFast Engineering Knowledge Base",
+    "summary": "Internal documentation for **ShopFast**, our e-commerce platform. Everything runs on",
+    "sections": [
+      "How this is organised",
+      "Quick links",
+      "Conventions"
+    ]
+  },
+  {
+    "path": "databases/backups-and-restore.md",
+    "title": "Backups and Restore",
+    "summary": "",
+    "sections": [
+      "Schedule",
+      "Manual backup before a risky change",
+      "Restore",
+      "Point-in-time recovery"
+    ]
+  },
+  {
+    "path": "databases/data-retention.md",
+    "title": "Data Retention",
+    "summary": "What we keep, and for how long. Driven by legal and PCI requirements \u2014 do not change these",
+    "sections": []
+  },
+  {
+    "path": "databases/elasticsearch.md",
+    "title": "Elasticsearch",
+    "summary": "Backs product search and autocomplete. Three-node cluster per environment.",
+    "sections": [
+      "Cluster health",
+      "Indices",
+      "Disk watermarks"
+    ]
+  },
+  {
+    "path": "databases/migrations.md",
+    "title": "Database Migrations",
+    "summary": "Schema changes run through the `ci/migrate` pipeline. Migrations are forward-only by default",
+    "sections": [
+      "Running a migration",
+      "Rollback procedure for a failed migration",
+      "Long migrations"
+    ]
+  },
+  {
+    "path": "databases/postgres.md",
+    "title": "Postgres",
+    "summary": "Primary relational store for ShopFast. Self-managed on Kubernetes (deployment `postgres`),",
+    "sections": [
+      "Connection limits",
+      "\"Too many connections\"",
+      "Failover",
+      "Disk full",
+      "Related"
+    ]
+  },
+  {
+    "path": "databases/redis.md",
+    "title": "Redis",
+    "summary": "Cache and ephemeral store. Used for sessions, carts, payment token cache, and the",
+    "sections": [
+      "Restart",
+      "Memory pressure",
+      "What lives where"
+    ]
+  },
+  {
+    "path": "incidents/escalation-paths.md",
+    "title": "Escalation Paths",
+    "summary": "",
+    "sections": [
+      "Paging escalation",
+      "When to escalate early",
+      "Non-engineering escalation"
+    ]
+  },
+  {
+    "path": "incidents/incident-response.md",
+    "title": "Incident Response",
+    "summary": "",
+    "sections": [
+      "The process",
+      "Roles",
+      "Useful first moves",
+      "Who to page"
+    ]
+  },
+  {
+    "path": "incidents/on-call-rotation.md",
+    "title": "On-Call Rotation",
+    "summary": "On-call is managed in PagerDuty. One week per rotation, handover Mondays at 10:00 local.",
+    "sections": [
+      "The rotations",
+      "How to page",
+      "Escalation",
+      "Out of hours"
+    ]
+  },
+  {
+    "path": "incidents/postmortem-2026-03-checkout-outage.md",
+    "title": "Postmortem \u2014 Checkout Outage, 2026-03-14",
+    "summary": "",
+    "sections": [
+      "Summary",
+      "Impact",
+      "Timeline (UTC)",
+      "Root cause",
+      "What went well",
+      "Action items"
+    ]
+  },
+  {
+    "path": "incidents/postmortem-2026-05-db-failover.md",
+    "title": "Postmortem \u2014 Database Failover, 2026-05-22",
+    "summary": "",
+    "sections": [
+      "Summary",
+      "Impact",
+      "Timeline (UTC)",
+      "Root cause",
+      "What went well",
+      "Action items"
+    ]
+  },
+  {
+    "path": "incidents/postmortem-2026-07-cdn-misconfig.md",
+    "title": "Postmortem \u2014 CDN Misconfiguration, 2026-07-09",
+    "summary": "",
+    "sections": [
+      "Summary",
+      "Impact",
+      "Timeline (UTC)",
+      "Root cause",
+      "What went well",
+      "Action items"
+    ]
+  },
+  {
+    "path": "incidents/postmortem-process.md",
+    "title": "Postmortem Process",
+    "summary": "Every SEV-1 and SEV-2 gets a written postmortem within **48 hours**. SEV-3 only if something",
+    "sections": [
+      "Blameless",
+      "Template",
+      "Action items",
+      "Published postmortems"
+    ]
+  },
+  {
+    "path": "incidents/severity-levels.md",
+    "title": "Severity Levels",
+    "summary": "",
+    "sections": [
+      "Examples",
+      "Escalating a severity"
+    ]
+  },
+  {
+    "path": "infrastructure/ci-cd-pipeline.md",
+    "title": "CI/CD Pipeline",
+    "summary": "Every service uses the same pipeline, defined centrally.",
+    "sections": [
+      "Stages",
+      "Build times",
+      "Flaky tests",
+      "Secrets in CI"
+    ]
+  },
+  {
+    "path": "infrastructure/dns.md",
+    "title": "DNS",
+    "summary": "DNS for shopfast.example is hosted with our cloud provider and managed in Terraform. Nobody",
+    "sections": []
+  },
+  {
+    "path": "infrastructure/environments.md",
+    "title": "Environments",
+    "summary": "",
+    "sections": [
+      "Differences that bite people",
+      "Data in staging",
+      "Promotion path"
+    ]
+  },
+  {
+    "path": "infrastructure/ingress-and-networking.md",
+    "title": "Ingress and Networking",
+    "summary": "Public traffic: **CDN \u2192 load balancer \u2192 NGINX ingress \u2192 service**.",
+    "sections": [
+      "NGINX ingress",
+      "Rate limiting",
+      "Network policies",
+      "Internal traffic",
+      "Symptoms worth knowing"
+    ]
+  },
+  {
+    "path": "infrastructure/kubernetes.md",
+    "title": "Kubernetes",
+    "summary": "ShopFast runs on managed Kubernetes, one cluster per environment.",
+    "sections": [
+      "Namespaces",
+      "Node pools",
+      "Common operations",
+      "Resource requests",
+      "Access"
+    ]
+  },
+  {
+    "path": "infrastructure/monitoring-and-alerting.md",
+    "title": "Monitoring and Alerting",
+    "summary": "Prometheus for metrics, Loki for logs, Tempo for traces, Grafana on top. Alertmanager routes",
+    "sections": [
+      "Dashboards",
+      "Alert philosophy",
+      "Known gap",
+      "Silencing"
+    ]
+  },
+  {
+    "path": "infrastructure/object-storage.md",
+    "title": "Object Storage and CDN",
+    "summary": "Static assets, product images, and log archives live in object storage, fronted by the CDN.",
+    "sections": [
+      "Buckets",
+      "Cache invalidation",
+      "Lifecycle"
+    ]
+  },
+  {
+    "path": "infrastructure/secrets-management.md",
+    "title": "Secrets Management",
+    "summary": "All secrets live in **Vault**. Kubernetes Secrets are populated from Vault by the secrets",
+    "sections": [
+      "Reading a secret",
+      "Adding a secret",
+      "Rotation",
+      "If a secret leaks"
+    ]
+  },
+  {
+    "path": "infrastructure/terraform.md",
+    "title": "Terraform",
+    "summary": "All infrastructure is defined in the `shopfast-infra` repository. Manual changes in the cloud",
+    "sections": [
+      "Layout",
+      "Workflow",
+      "State",
+      "Dangerous resources"
+    ]
+  },
+  {
+    "path": "onboarding/README.md",
+    "title": "Onboarding \u2014 FAQ",
+    "summary": "Start here on day one. Questions new engineers actually ask, in the order they ask them.",
+    "sections": []
+  },
+  {
+    "path": "onboarding/dev-environment.md",
+    "title": "Development Environment",
+    "summary": "",
+    "sections": [
+      "What you need",
+      "The model",
+      "Datastores",
+      "Tests"
+    ]
+  },
+  {
+    "path": "onboarding/first-week-checklist.md",
+    "title": "First Week Checklist",
+    "summary": "",
+    "sections": [
+      "Day 1",
+      "Day 2",
+      "Day 3",
+      "Day 4",
+      "Day 5"
+    ]
+  },
+  {
+    "path": "onboarding/team-structure.md",
+    "title": "Team Structure",
+    "summary": "Five engineering teams, each owning services end to end \u2014 including the on-call for them.",
+    "sections": [
+      "You build it, you run it",
+      "Channels"
+    ]
+  },
+  {
+    "path": "onboarding/tooling.md",
+    "title": "Tooling",
+    "summary": "",
+    "sections": [
+      "The `ci` CLI",
+      "Conventions"
+    ]
+  },
+  {
+    "path": "operations/capacity-planning.md",
+    "title": "Capacity Planning",
+    "summary": "Reviewed quarterly, plus ahead of every major traffic event.",
+    "sections": [
+      "Baseline",
+      "Headroom targets",
+      "Before a traffic event",
+      "What has bitten us"
+    ]
+  },
+  {
+    "path": "operations/cost-controls.md",
+    "title": "Cost Controls",
+    "summary": "Cloud spend is reviewed monthly by the Platform team.",
+    "sections": []
+  },
+  {
+    "path": "operations/deploy-freeze.md",
+    "title": "Deploy Freeze",
+    "summary": "A freeze blocks all production deploys. The pipeline refuses to run, it is not an honour",
+    "sections": [
+      "When a freeze is in effect",
+      "Who can lift it",
+      "Shipping a fix during a freeze",
+      "Checking freeze status"
+    ]
+  },
+  {
+    "path": "operations/deployments.md",
+    "title": "Deployments",
+    "summary": "All ShopFast services deploy through the `ci/deploy` pipeline. Deploys are image-tag based;",
+    "sections": [
+      "Deploy a service",
+      "Flags",
+      "Canary deploys",
+      "After deploying",
+      "Freezes"
+    ]
+  },
+  {
+    "path": "operations/maintenance-windows.md",
+    "title": "Maintenance Windows",
+    "summary": "Standard window: **Tuesdays 02:00\u201304:00 UTC**. Lowest traffic of the week.",
+    "sections": [
+      "Requesting a window",
+      "Customer communication",
+      "Emergency maintenance"
+    ]
+  },
+  {
+    "path": "operations/rollbacks.md",
+    "title": "Rollbacks",
+    "summary": "Rolling back is the default response to a bad deploy. Do it first, debug afterwards.",
+    "sections": [
+      "Roll back to the previous version",
+      "Roll back to a specific revision",
+      "When a rollback is NOT safe",
+      "After a rollback"
+    ]
+  },
+  {
+    "path": "operations/scaling.md",
+    "title": "Scaling",
+    "summary": "Most services scale horizontally with HPA on CPU. A few need manual attention.",
+    "sections": [
+      "Horizontal pod autoscaling",
+      "Services that do not autoscale well",
+      "Traffic events"
+    ]
+  },
+  {
+    "path": "reference/api-conventions.md",
+    "title": "API Conventions",
+    "summary": "All internal ShopFast HTTP APIs follow these rules.",
+    "sections": [
+      "Versioning",
+      "Errors",
+      "Idempotency",
+      "Pagination",
+      "Timeouts",
+      "Health endpoints"
+    ]
+  },
+  {
+    "path": "reference/error-codes.md",
+    "title": "Error Code Reference",
+    "summary": "Internal ShopFast error codes. These appear in API responses, logs, and alerts.",
+    "sections": []
+  },
+  {
+    "path": "reference/glossary.md",
+    "title": "Glossary",
+    "summary": "the old thing in a later release.",
+    "sections": []
+  },
+  {
+    "path": "reference/ports.md",
+    "title": "Port Reference",
+    "summary": "Ports used across ShopFast services. Internal only unless marked public.",
+    "sections": []
+  },
+  {
+    "path": "reference/service-ownership.md",
+    "title": "Service Ownership",
+    "summary": "Who owns what. The owning team is responsible for the on-call rotation, the SLO, and the",
+    "sections": []
+  },
+  {
+    "path": "reference/slos.md",
+    "title": "Service Level Objectives",
+    "summary": "Measured over a rolling 30-day window. Breaching an SLO does not automatically create an",
+    "sections": []
+  },
+  {
+    "path": "security/access-control.md",
+    "title": "Access Control",
+    "summary": "",
+    "sections": [
+      "Principles",
+      "Human access",
+      "Production database access",
+      "The internal admin API",
+      "Offboarding",
+      "Break-glass"
+    ]
+  },
+  {
+    "path": "security/audit-logging.md",
+    "title": "Audit Logging",
+    "summary": "",
+    "sections": [
+      "What is audited",
+      "Properties",
+      "Querying",
+      "Alerts",
+      "During an incident"
+    ]
+  },
+  {
+    "path": "security/incident-security-playbook.md",
+    "title": "Security Incident Playbook",
+    "summary": "For suspected compromise, data exposure, or leaked credentials. This is **in addition to**",
+    "sections": [
+      "First 15 minutes",
+      "Leaked credential",
+      "Data exposure",
+      "What not to do"
+    ]
+  },
+  {
+    "path": "security/key-rotation.md",
+    "title": "Key Rotation",
+    "summary": "Written after the March 2026 checkout outage, which was caused by a bad rotation \u2014",
+    "sections": [
+      "The rule",
+      "Schedule",
+      "Procedure",
+      "JWT signing key \u2014 read this first",
+      "If rotation fails halfway"
+    ]
+  },
+  {
+    "path": "security/pci-compliance.md",
+    "title": "PCI Compliance",
+    "summary": "ShopFast is PCI-DSS SAQ-A eligible because **we never touch raw card data**. Cards are",
+    "sections": [
+      "The hard rules",
+      "Audit",
+      "Changes that affect scope"
+    ]
+  },
+  {
+    "path": "security/vulnerability-management.md",
+    "title": "Vulnerability Management",
+    "summary": "",
+    "sections": [
+      "Scanning",
+      "Remediation SLAs",
+      "Exceptions",
+      "Zero-days"
+    ]
+  },
+  {
+    "path": "services/auth-service.md",
+    "title": "Auth Service",
+    "summary": "Handles login, sessions, and guest\u2192customer cart merge. Deployment `auth` in `prod`.",
+    "sections": [
+      "Restart",
+      "Sessions",
+      "Health check",
+      "Common issues"
+    ]
+  },
+  {
+    "path": "services/cart-service.md",
+    "title": "Cart Service",
+    "summary": "Holds in-progress carts. Backed entirely by Redis \u2014 carts are **not** durable and expire",
+    "sections": []
+  },
+  {
+    "path": "services/inventory-service.md",
+    "title": "Inventory Service",
+    "summary": "Tracks stock levels and reservations. Deployment `inventory` in `prod`. Owned by the",
+    "sections": [
+      "Reservations",
+      "Oversell"
+    ]
+  },
+  {
+    "path": "services/notifications-service.md",
+    "title": "Notifications Service",
+    "summary": "Sends transactional email and SMS (order confirmations, shipping updates, password resets).",
+    "sections": [
+      "Retries and the dead-letter queue",
+      "Do not"
+    ]
+  },
+  {
+    "path": "services/orders-service.md",
+    "title": "Orders Service",
+    "summary": "Order lifecycle API (Go). Creates orders, tracks state transitions, and emits order events",
+    "sections": [
+      "Order states",
+      "Restart",
+      "Health check",
+      "Known quirk: connection leak after deploy",
+      "Dependencies"
+    ]
+  },
+  {
+    "path": "services/payments-gateway.md",
+    "title": "Payments Gateway",
+    "summary": "The **payments-gateway** is the outbound adapter between ShopFast and our card processors",
+    "sections": [
+      "Restart / bounce the gateway",
+      "Health check",
+      "Processor failover",
+      "Common issues",
+      "Dependencies"
+    ]
+  },
+  {
+    "path": "services/payments-service.md",
+    "title": "Payments Service",
+    "summary": "The **payments** service owns the checkout flow: it validates the cart, creates a payment",
+    "sections": [
+      "Restart / bounce the service",
+      "Health check",
+      "Common issues",
+      "Dependencies",
+      "Escalation"
+    ]
+  },
+  {
+    "path": "services/pricing-service.md",
+    "title": "Pricing Service",
+    "summary": "Computes final price: base price, promotions, regional tax, and currency conversion.",
+    "sections": [
+      "Promotion cache",
+      "Currency rates",
+      "Common issues"
+    ]
+  },
+  {
+    "path": "services/reviews-service.md",
+    "title": "Reviews Service",
+    "summary": "Customer product reviews and ratings. Deployment `reviews` in `prod`. Owned by the Web team.",
+    "sections": []
+  },
+  {
+    "path": "services/search-service.md",
+    "title": "Search Service",
+    "summary": "Product search and autocomplete, backed by Elasticsearch. Deployment `search` in `prod`.",
+    "sections": [
+      "Restart",
+      "Reindexing",
+      "Common issues"
+    ]
+  },
+  {
+    "path": "services/shipping-service.md",
+    "title": "Shipping Service",
+    "summary": "Rate quotes, label generation, and carrier tracking. Deployment `shipping` in `prod`.",
+    "sections": [
+      "Carriers",
+      "Label generation stuck"
+    ]
+  },
+  {
+    "path": "services/web-storefront.md",
+    "title": "Web Storefront",
+    "summary": "The customer-facing storefront (Next.js), served behind the NGINX ingress. Deployment `web`",
+    "sections": [
+      "Restart",
+      "Build & deploy notes",
+      "Health check",
+      "Common issues"
+    ]
+  }
+]

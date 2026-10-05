@@ -1,0 +1,10 @@
+__pycache__/
+.venv/
+
+# Generated indexes — rebuild with build_tree.py / index_vector.py
+tree.json
+
+# Benchmark output — your runs, not mine. Rebuild with benchmark.py.
+results.json
+results-run*.json
+runs-archive/

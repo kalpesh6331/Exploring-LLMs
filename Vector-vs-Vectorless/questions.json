@@ -1,0 +1,111 @@
+{
+  "_about": "Ground-truth evaluation set for the ShopFast knowledge base. Used in Ep 8 to benchmark vector RAG (Ep 6) against vectorless tree-navigation RAG (Ep 7). Each question has a KNOWN correct source document, so retrieval can be scored objectively instead of by eyeballing.",
+  "_scoring": {
+    "retrieval_hit": "did the engine surface ALL docs in expected_sources?",
+    "answer_correct": "does the final answer contain every string in expected_answer_contains?",
+    "also_record": ["latency_seconds", "tokens_in", "tokens_out", "llm_calls"]
+  },
+  "_regimes": {
+    "single_doc": "answer lives in one obvious document",
+    "exact_identifier": "hinges on an exact code/flag/port — classic weak spot for embedding similarity",
+    "multi_hop": "answer requires combining two different documents",
+    "confusable": "a near-duplicate document exists that is the WRONG answer",
+    "structure_dependent": "the right document has several similar sections; only one is correct",
+    "not_in_docs": "answer is absent — the engine must say it doesn't know"
+  },
+
+  "questions": [
+    {
+      "id": "q01",
+      "question": "How do I restart the payments service?",
+      "regime": "single_doc",
+      "expected_sources": ["services/payments-service.md"],
+      "expected_answer_contains": ["kubectl rollout restart deploy/payments", "prod"]
+    },
+    {
+      "id": "q02",
+      "question": "What does error code ERR-5012 mean?",
+      "regime": "exact_identifier",
+      "expected_sources": ["reference/error-codes.md"],
+      "expected_answer_contains": ["payment gateway timeout"],
+      "notes": "Exact-token lookup. Vector search often misses this because the code carries no semantic meaning."
+    },
+    {
+      "id": "q03",
+      "question": "Which deploy flag skips the pre-deploy smoke tests?",
+      "regime": "exact_identifier",
+      "expected_sources": ["operations/deployments.md"],
+      "expected_answer_contains": ["--skip-smoke"]
+    },
+    {
+      "id": "q04",
+      "question": "Checkout is down during a deploy freeze. Who do I page, and who can approve deploying the fix?",
+      "regime": "multi_hop",
+      "expected_sources": ["incidents/on-call-rotation.md", "operations/deploy-freeze.md"],
+      "expected_answer_contains": ["Payments on-call", "Incident Commander"],
+      "notes": "Needs TWO documents. Top-k retrieval frequently returns both halves of one and neither of the other."
+    },
+    {
+      "id": "q05",
+      "question": "How do I restart the payments gateway?",
+      "regime": "confusable",
+      "expected_sources": ["services/payments-gateway.md"],
+      "expected_answer_contains": ["deploy/payments-gateway"],
+      "notes": "The trap: payments-service.md is extremely similar. Returning deploy/payments here is WRONG."
+    },
+    {
+      "id": "q06",
+      "question": "What is the maximum Postgres connection limit in staging?",
+      "regime": "structure_dependent",
+      "expected_sources": ["databases/postgres.md"],
+      "expected_answer_contains": ["50"],
+      "notes": "postgres.md has per-environment sections (prod 200, staging 50, dev 20). Retrieving the doc is easy; retrieving the RIGHT SECTION is the test."
+    },
+    {
+      "id": "q07",
+      "question": "Which team owns the orders service, and what is its p99 latency SLO?",
+      "regime": "multi_hop",
+      "expected_sources": ["reference/service-ownership.md", "reference/slos.md"],
+      "expected_answer_contains": ["Orders", "400"]
+    },
+    {
+      "id": "q08",
+      "question": "How do I configure the Kafka message queue?",
+      "regime": "not_in_docs",
+      "expected_sources": [],
+      "expected_answer_contains": [],
+      "notes": "GUARDRAIL. Kafka is deliberately absent from the entire corpus. A correct answer says it doesn't know. Any confident answer is a hallucination and scores zero."
+    },
+    {
+      "id": "q09",
+      "question": "What is the rollback procedure if a database migration fails?",
+      "regime": "structure_dependent",
+      "expected_sources": ["databases/migrations.md"],
+      "expected_answer_contains": ["ci/migrate down", "roll"],
+      "notes": "Answer is a numbered procedure inside one section; chunking can sever the steps."
+    },
+    {
+      "id": "q10",
+      "question": "What port does the internal admin API listen on?",
+      "regime": "exact_identifier",
+      "expected_sources": ["reference/ports.md"],
+      "expected_answer_contains": ["8443"],
+      "notes": "Lives in a table row. Table rows chunk badly."
+    },
+    {
+      "id": "q11",
+      "question": "How long is stock reserved when an order is placed?",
+      "regime": "single_doc",
+      "expected_sources": ["services/inventory-service.md"],
+      "expected_answer_contains": ["15 minutes"]
+    },
+    {
+      "id": "q12",
+      "question": "Why must Postgres never run on spot instances?",
+      "regime": "multi_hop",
+      "expected_sources": ["infrastructure/kubernetes.md", "incidents/postmortem-2026-05-db-failover.md"],
+      "expected_answer_contains": ["spot", "failover"],
+      "notes": "The rule is in kubernetes.md; the reason (a real SEV-1) is in the postmortem."
+    }
+  ]
+}

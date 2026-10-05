@@ -1,0 +1,833 @@
+{
+  "uid": "rag-benchmark",
+  "title": "RAG Benchmark \u2014 vector vs vectorless",
+  "tags": [
+    "rag",
+    "evals"
+  ],
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "",
+  "time": {
+    "from": "2026-09-21T09:00:00.000Z",
+    "to": "2026-09-21T12:00:00.000Z"
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Headline  \u2014  3 runs, 12 questions, 60 documents",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "id": 1,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Retrieval hit-rate  (%)",
+      "description": "Did every expected source document come back? All-or-nothing per question. Excludes the guardrail question, where retrieving nothing is the win.",
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT engine, ROUND(100.0*SUM(CASE WHEN hit THEN 1 ELSE 0 END)/COUNT(*),1) AS value\nFROM results WHERE regime <> 'not_in_docs' GROUP BY engine ORDER BY engine\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vector"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 2,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Answer correctness  (%)",
+      "description": "Does the answer contain every required string from the ground truth?",
+      "gridPos": {
+        "x": 6,
+        "y": 1,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT engine, ROUND(100.0*SUM(CASE WHEN correct THEN 1 ELSE 0 END)/COUNT(*),1) AS value\nFROM results GROUP BY engine ORDER BY engine\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vector"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 3,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Avg latency per question",
+      "description": "Wall clock, end to end.",
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT engine, ROUND(AVG(seconds),1) AS value FROM results GROUP BY engine ORDER BY engine\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vector"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 4,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Cost per 12-question run",
+      "description": "Sonnet pricing: $3/M in, $15/M out.",
+      "gridPos": {
+        "x": 18,
+        "y": 1,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT engine, ROUND(SUM(cost_usd)/COUNT(DISTINCT run),4) AS value\nFROM results GROUP BY engine ORDER BY engine\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 4,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "text"
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vector"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 5,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "row",
+      "title": "Where they differ",
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "id": 9,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "barchart",
+      "title": "Answer correctness by question type",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 14,
+        "h": 8
+      },
+      "description": "Identical everywhere except multi-hop. That single column is the whole difference.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT regime,\n  ROUND(100.0*SUM(CASE WHEN engine='vector'     AND correct THEN 1 ELSE 0 END)\n        /NULLIF(SUM(CASE WHEN engine='vector' THEN 1 ELSE 0 END),0),0) AS \"vector\",\n  ROUND(100.0*SUM(CASE WHEN engine='vectorless' AND correct THEN 1 ELSE 0 END)\n        /NULLIF(SUM(CASE WHEN engine='vectorless' THEN 1 ELSE 0 END),0),0) AS \"vectorless\"\nFROM results GROUP BY regime ORDER BY regime\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "xTickLabelRotation": -30,
+        "showValue": "always",
+        "groupWidth": 0.7,
+        "barWidth": 0.8,
+        "legend": {
+          "showLegend": true,
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vector"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 10,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "Tokens burned per run",
+      "gridPos": {
+        "x": 14,
+        "y": 20,
+        "w": 10,
+        "h": 8
+      },
+      "description": "The vectorless table of contents rides along inside every single question.",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT engine, ROUND(SUM(tokens)/COUNT(DISTINCT run)) AS value\nFROM results GROUP BY engine ORDER BY engine\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 11,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "row",
+      "title": "Detail",
+      "gridPos": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "id": 12,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "barchart",
+      "title": "Latency per question",
+      "gridPos": {
+        "x": 0,
+        "y": 29,
+        "w": 14,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT question_id,\n  ROUND(AVG(CASE WHEN engine='vector'     THEN seconds END),1) AS \"vector\",\n  ROUND(AVG(CASE WHEN engine='vectorless' THEN seconds END),1) AS \"vectorless\"\nFROM results GROUP BY question_id ORDER BY question_id\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "showValue": "never",
+        "groupWidth": 0.7,
+        "barWidth": 0.85,
+        "legend": {
+          "showLegend": true,
+          "placement": "bottom"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vector"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vectorless"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "id": 13,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "type": "table",
+      "title": "Every failure, and what came back instead",
+      "gridPos": {
+        "x": 14,
+        "y": 29,
+        "w": 10,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawSql": "\nSELECT run, engine, question_id AS q, regime,\n       CASE WHEN hit THEN 'y' ELSE 'n' END AS hit,\n       CASE WHEN correct THEN 'y' ELSE 'n' END AS ok,\n       sources\nFROM results WHERE NOT (hit AND correct) ORDER BY run, engine, question_id\n",
+          "rawQuery": true
+        }
+      ],
+      "options": {
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "left",
+            "minWidth": 60
+          }
+        },
+        "overrides": []
+      },
+      "id": 14,
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      }
+    },
+    {
+      "id": 15,
+      "type": "row",
+      "title": "How many questions each method got right  \u2014  one dial per run",
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      },
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 16,
+      "type": "gauge",
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      },
+      "title": "Vector  \u2014  questions answered correctly, per run  (out of 12)",
+      "description": "One dial per run. Vector scores the same 11 every single time \u2014 the retrieval is maths, so nothing moves.",
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 12,
+        "h": 11
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "\nSELECT 'run ' || run AS run,\n       SUM(CASE WHEN correct THEN 1 ELSE 0 END) AS value\nFROM results WHERE engine = 'vector'\nGROUP BY run ORDER BY run\n"
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "minVizWidth": 200,
+        "minVizHeight": 200,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 12,
+          "unit": "none",
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 7
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 12
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 17,
+      "type": "gauge",
+      "datasource": {
+        "type": "postgres",
+        "uid": "benchpg"
+      },
+      "title": "Vectorless  \u2014  questions answered correctly, per run  (out of 12)",
+      "description": "One dial per run. 12 on the first run, 11 on the next two \u2014 the retriever is a model call, so it can change its mind. q04 is the cell that flips; the failures table below shows it.",
+      "gridPos": {
+        "x": 12,
+        "y": 7,
+        "w": 12,
+        "h": 11
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "postgres",
+            "uid": "benchpg"
+          },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "\nSELECT 'run ' || run AS run,\n       SUM(CASE WHEN correct THEN 1 ELSE 0 END) AS value\nFROM results WHERE engine = 'vectorless'\nGROUP BY run ORDER BY run\n"
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "minVizWidth": 200,
+        "minVizHeight": 200,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 12,
+          "unit": "none",
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 7
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 12
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    }
+  ]
+}
